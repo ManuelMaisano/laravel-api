@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Models\Project;
 
 use App\Http\Controllers\Controller;
@@ -8,12 +9,28 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $projects = Project::all();
         //dd($projects);
         return response()->json([
             'success' => true,
             'results' => $projects
         ]);
+    }
+    public function show($slug)
+    {
+        $project = Project::where('slug', $slug)->with('type', 'technologies')->first();
+        if ($project) {
+            return response()->json([
+                'success' => true,
+                'results' => $project
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'results' => 'Project not found'
+            ]);
+        }
     }
 }
